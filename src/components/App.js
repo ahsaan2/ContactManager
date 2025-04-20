@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Header from "./Header";
 import AddContact from "./AddContact";
 import ContactList from "./ContactList";
 import { v4 as uuid } from "uuid"; // Universally unique identifier
-
+import ContactDetails from "./ContactDetails";
 function App() {
   const LOCAL_STORAGE_KEY = "contacts";
   // rendering a list
@@ -21,7 +21,8 @@ function App() {
   };
 
   // DELETE THE USER ON THE ID
-  const removeContactHandler = (id) => {  // pass this handler to the contact list
+  const removeContactHandler = (id) => {
+    // pass this handler to the contact list
     // copy the contacts
     const newContactList = contacts.filter((contact) => {
       return contact.id !== id;
@@ -57,10 +58,27 @@ function App() {
 
   return (
     <div className="ui container">
-      <Header />
-      <AddContact addContactHandler={addContactHandler} />
-      {/*     adding contacts as the property name, this contacts list can be accessed in the contact list via props */}
-      <ContactList contacts={contacts} getContactId = {removeContactHandler}/>
+      {/* setting the router, add the components */}
+      <Router>
+        <Header />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ContactList
+                contacts={contacts}
+                getContactId={removeContactHandler}
+              />
+            }
+          />
+          <Route
+            path="/add"
+            element={<AddContact addContactHandler={addContactHandler} />}
+          />
+         <Route path="/contact/:id" element={<ContactDetails />} />
+
+        </Routes>
+      </Router>
     </div>
   );
 }
